@@ -30,8 +30,8 @@ namespace CONFIG4CPP_NAMESPACE {
 
 void
 SchemaTypeBoolean::checkRule(
-	const SchemaValidator *		sv,
-	const Configuration *		cfg,
+	const SchemaValidator *,
+	const Configuration *,
 	const char *				typeName,
 	const StringVector &		typeArgs,
 	const char *				rule) const
@@ -49,12 +49,12 @@ SchemaTypeBoolean::checkRule(
 
 bool
 SchemaTypeBoolean::isA(
-	const SchemaValidator *		sv,
+	const SchemaValidator *,
 	const Configuration *		cfg,
 	const char *				value,
-	const char *				typeName,
-	const StringVector &		typeArgs,
-	int							indentLevel,
+	const char *,
+	const StringVector &,
+	int,
 	StringBuffer &				errSuffix) const
 {
 	bool						result;

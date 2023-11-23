@@ -55,7 +55,7 @@ SchemaType::validate(
 	const char *				scope,
 	const char *				name,
 	const char *				typeName,
-	const char *				origTypeName,
+	const char *,
 	const StringVector &		typeArgs,
 	int							indentLevel) const
 {
@@ -85,13 +85,13 @@ SchemaType::validate(
 
 bool
 SchemaType::isA(
-	const SchemaValidator *		sv,
-	const Configuration *		cfg,
-	const char *				value,
-	const char *				typeName,
-	const StringVector &		typeArgs,
-	int							indentLevel,
-	StringBuffer &				errSuffix) const
+	const SchemaValidator *,
+	const Configuration *,
+	const char *,
+	const char *,
+	const StringVector &,
+	int,
+	StringBuffer &) const
 {
 	return false;
 }

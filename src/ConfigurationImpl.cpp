@@ -1318,7 +1318,7 @@ ConfigurationImpl::lookupInt(
 	int					result;
 	char				defaultStrVal[64]; // Big enough
 
-	sprintf(defaultStrVal, "%d", defaultVal);
+	snprintf(defaultStrVal, sizeof(defaultStrVal), "%d", defaultVal);
 	strValue = lookupString(scope, localName, defaultStrVal);
 	result = stringToInt(scope, localName, strValue);
 	return result;
@@ -1659,7 +1659,7 @@ ConfigurationImpl::isUnitsWithFloat(
 	// See if the string is in the form "allowedUnits[index] <float>"
 	//--------
 	for (index = 0; index < allowedUnitsSize; index++) {
-		sprintf(formatStr, "%s %%f%%c", allowedUnits[index]);
+		snprintf(formatStr, maxUnitsLen + 7, "%s %%f%%c", allowedUnits[index]);
 		i = sscanf(str, formatStr, &fVal, &dummyCh);
 		if (i == 1) {
 			delete [] formatStr;
@@ -1866,7 +1866,7 @@ ConfigurationImpl::stringToUnitsWithInt(
 	// See if the string is in the form "allowedUnits[index] <int>"
 	//--------
 	for (index = 0; index < allowedUnitsSize; index++) {
-		sprintf(formatStr, "%s %%d%%c", allowedUnits[index]);
+		snprintf(formatStr, maxUnitsLen + 7, "%s %%d%%c", allowedUnits[index]);
 		i = sscanf(str, formatStr, &intVal, &dummyCh);
 		if (i == 1) {
 			unitsResult = allowedUnits[index];
@@ -1969,7 +1969,7 @@ ConfigurationImpl::isUnitsWithInt(
 	// See if the string is in the form "allowedUnits[index] <int>"
 	//--------
 	for (index = 0; index < allowedUnitsSize; index++) {
-		sprintf(formatStr, "%s %%d%%c", allowedUnits[index]);
+		snprintf(formatStr, maxUnitsLen + 7, "%s %%d%%c", allowedUnits[index]);
 		i = sscanf(str, formatStr, &intVal, &dummyCh);
 		if (i == 1) {
 			delete [] formatStr;
@@ -2218,7 +2218,7 @@ ConfigurationImpl::stringToUnitsWithFloat(
 	// See if the string is in the form "allowedUnits[index] <float>"
 	//--------
 	for (index = 0; index < allowedUnitsSize; index++) {
-		sprintf(formatStr, "%s %%f%%c", allowedUnits[index]);
+		snprintf(formatStr, maxUnitsLen + 7, "%s %%f%%c", allowedUnits[index]);
 		i = sscanf(str, formatStr, &fVal, &dummyCh);
 		if (i == 1) {
 			unitsResult = allowedUnits[index];
@@ -2476,9 +2476,9 @@ ConfigurationImpl::lookupDurationMicroseconds(
 	int					result;
 
 	if (defaultVal == -1) {
-		sprintf(defaultStrValue, "infinite");
+		snprintf(defaultStrValue, sizeof(defaultStrValue), "infinite");
 	} else {
-		sprintf(defaultStrValue, "%d microseconds", defaultVal);
+		snprintf(defaultStrValue, sizeof(defaultStrValue), "%d microseconds", defaultVal);
 	}
 	strValue = lookupString(scope, localName, defaultStrValue);
 	result = stringToDurationMicroseconds(scope, localName, strValue);
@@ -2513,9 +2513,9 @@ ConfigurationImpl::lookupDurationMilliseconds(
 	int					result;
 
 	if (defaultVal == -1) {
-		sprintf(defaultStrValue, "infinite");
+		snprintf(defaultStrValue, sizeof(defaultStrValue), "infinite");
 	} else {
-		sprintf(defaultStrValue, "%d milliseconds", defaultVal);
+		snprintf(defaultStrValue, sizeof(defaultStrValue), "%d milliseconds", defaultVal);
 	}
 	strValue = lookupString(scope, localName, defaultStrValue);
 	result = stringToDurationMilliseconds(scope, localName, strValue);
@@ -2550,9 +2550,9 @@ ConfigurationImpl::lookupDurationSeconds(
 	int					result;
 
 	if (defaultVal == -1) {
-		sprintf(defaultStrValue, "infinite");
+		snprintf(defaultStrValue, sizeof(defaultStrValue), "infinite");
 	} else {
-		sprintf(defaultStrValue, "%d seconds", defaultVal);
+		snprintf(defaultStrValue, sizeof(defaultStrValue), "%d seconds", defaultVal);
 	}
 	strValue = lookupString(scope, localName, defaultStrValue);
 	result = stringToDurationSeconds(scope, localName, strValue);
@@ -2659,7 +2659,7 @@ ConfigurationImpl::lookupMemorySizeBytes(
 	const char *		strValue;
 	int					result;
 
-	sprintf(defaultStrValue, "%d milliseconds", defaultVal);
+	snprintf(defaultStrValue, sizeof(defaultStrValue), "%d milliseconds", defaultVal);
 	strValue = lookupString(scope, localName, defaultStrValue);
 	result = stringToMemorySizeBytes(scope, localName, strValue);
 	return result;
@@ -2692,7 +2692,7 @@ ConfigurationImpl::lookupMemorySizeKB(
 	const char *		strValue;
 	int					result;
 
-	sprintf(defaultStrValue, "%d KB", defaultVal);
+	snprintf(defaultStrValue, sizeof(defaultStrValue), "%d KB", defaultVal);
 	strValue = lookupString(scope, localName, defaultStrValue);
 	result = stringToMemorySizeKB(scope, localName, strValue);
 	return result;
@@ -2725,7 +2725,7 @@ ConfigurationImpl::lookupMemorySizeMB(
 	const char *		strValue;
 	int					result;
 
-	sprintf(defaultStrValue, "%d MB", defaultVal);
+	snprintf(defaultStrValue, sizeof(defaultStrValue), "%d MB", defaultVal);
 	strValue = lookupString(scope, localName, defaultStrValue);
 	result = stringToMemorySizeMB(scope, localName, strValue);
 	return result;
@@ -2758,7 +2758,7 @@ ConfigurationImpl::lookupFloat(
 	float				result;
 	char				defaultStrVal[64]; // Big enough
 
-	sprintf(defaultStrVal, "%f", defaultVal);
+	snprintf(defaultStrVal, sizeof(defaultStrVal), "%f", defaultVal);
 	strValue = lookupString(scope, localName, defaultStrVal);
 	result = stringToFloat(scope, localName, strValue);
 	return result;
@@ -2827,6 +2827,7 @@ ConfigurationImpl::popIncludedFilename(const char * fileName)
 	int	size;
 
 	size = m_fileNameStack.length();
+        (void)size;
 	assert(size > 0);
 	assert (strcmp(m_fileNameStack[size-1], fileName) == 0);
 	m_fileNameStack.removeLast();

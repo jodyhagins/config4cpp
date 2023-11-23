@@ -184,8 +184,9 @@ Configuration::patternMatch(const char * str, const char * pattern)
 	int						numWildcards;
 	const char *			suffix;
 
-	if (isAsciiStr(str, strLen)
-		&& isAsciiPattern(pattern, numWildcards, patternLen))
+        bool is_ascii_str = isAsciiStr(str, strLen);
+        bool is_ascii_pattern = isAsciiPattern(pattern, numWildcards, patternLen);
+	if (is_ascii_str && is_ascii_pattern)
 	{
 		//--------
 		// Optimise for some common cases.

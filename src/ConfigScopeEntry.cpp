@@ -46,7 +46,7 @@ ConfigScopeEntry::ConfigScopeEntry()
 
 
 ConfigScopeEntry::ConfigScopeEntry(
-		const char *		name,
+		const char *,
 		ConfigItem *		item,
 		ConfigScopeEntry *	next)
 {

@@ -129,7 +129,7 @@ StringBuffer::append(int val)
 {
 	char			str[64]; // Big enough
 
-	sprintf(str, "%d", val);
+	snprintf(str, sizeof(str), "%d", val);
 	append(str);
 	return *this;
 }
@@ -141,7 +141,7 @@ StringBuffer::append(float val)
 {
 	char			str[64]; // Big enough
 
-	sprintf(str, "%f", val);
+	snprintf(str, sizeof(str), "%f", val);
 	append(str);
 	return *this;
 }

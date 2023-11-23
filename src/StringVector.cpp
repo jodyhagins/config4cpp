@@ -47,8 +47,6 @@ copyString(const char * str)
 
 StringVector::StringVector(int initialCapacity)
 {
-	int				i;
-
 	assert(initialCapacity >= 0);
 	if (initialCapacity == 0) {
 		initialCapacity = 10;

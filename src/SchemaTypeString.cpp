@@ -29,7 +29,7 @@ namespace CONFIG4CPP_NAMESPACE {
 
 void
 SchemaTypeString::checkRule(
-	const SchemaValidator *		sv,
+	const SchemaValidator *,
 	const Configuration *		cfg,
 	const char *				typeName,
 	const StringVector &		typeArgs,
@@ -80,12 +80,12 @@ SchemaTypeString::checkRule(
 
 bool
 SchemaTypeString::isA(
-	const SchemaValidator *		sv,
+	const SchemaValidator *,
 	const Configuration *		cfg,
 	const char *				value,
-	const char *				typeName,
+	const char *,
 	const StringVector &		typeArgs,
-	int							indentLevel,
+	int,
 	StringBuffer &				errSuffix) const
 {
 	int							strLen;

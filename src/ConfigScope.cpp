@@ -446,6 +446,8 @@ ConfigScope::listLocalNames(
 			entry = entry->m_next;
 		}
 	}
+        (void)countWanted;
+        (void)countUnwanted;
 	assert(countWanted + countUnwanted == m_numEntries);
 }
 

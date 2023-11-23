@@ -1199,7 +1199,6 @@ ConfigParser::parseSiblingScope(StringBuffer & str)
 	ConfigScope *			currScope;
 	StringBuffer			siblingName;
 	const char *			parentScopeName;
-	const char *			val;
 
 	accept(ConfigLex::LEX_FUNC_SIBLING_SCOPE_SYM,
 		"expecting 'siblingScope('");
@@ -1295,7 +1294,6 @@ ConfigParser::parseReplace(StringBuffer & result)
 	StringBuffer			searchStr;
 	StringBuffer			replacementStr;
 	const char *			p;
-	int						origStrLen;
 	int						searchStrLen;
 	int						currStart;
 	int						currEnd;
@@ -1309,7 +1307,6 @@ ConfigParser::parseReplace(StringBuffer & result)
 	accept(ConfigLex::LEX_CLOSE_PAREN_SYM, "expecting ')'");
 
 	result = "";
-	origStrLen = origStr.length();
 	searchStrLen = searchStr.length();
 	currStart = 0;
 	p = strstr(origStr.c_str(), searchStr.c_str());
@@ -1338,7 +1335,6 @@ ConfigParser::parseSplit(StringVector & list)
 	StringBuffer		str;
 	StringBuffer		delim;
 	const char *		p;
-	int					strLen;
 	int					delimLen;
 	int					currStart;
 	int					currEnd;
@@ -1350,7 +1346,6 @@ ConfigParser::parseSplit(StringVector & list)
 	accept(ConfigLex::LEX_CLOSE_PAREN_SYM, "expecting ')'");
 
 	list.empty();
-	strLen = str.length();
 	delimLen = delim.length();
 	currStart = 0;
 	p = strstr(str.c_str(), delim.c_str());

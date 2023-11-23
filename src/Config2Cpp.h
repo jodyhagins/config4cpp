@@ -51,6 +51,7 @@ public:
 	const char * className()			{ return m_className; }
 	const char * cppExt()				{ return m_cppExt; }
 	const char * hExt()					{ return m_hExt; }
+	const char * outDir()				{ return m_outDir; }
 	bool         wantSchema()			{ return m_wantSchema; }
 
 private:
@@ -78,6 +79,7 @@ private:
 	char *		m_className;
 	char *		m_cppExt;
 	char *		m_hExt;
+        char *          m_outDir;
 	bool		m_wantSingleton;
 	bool		m_wantSchema;
 	int			m_namespaceArraySize;

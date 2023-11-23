@@ -30,7 +30,7 @@ namespace CONFIG4CPP_NAMESPACE {
 void
 SchemaTypeTuple::checkRule(
 	const SchemaValidator *		sv,
-	const Configuration *		cfg,
+	const Configuration *,
 	const char *				typeName,
 	const StringVector &		typeArgs,
 	const char *				rule) const
@@ -87,7 +87,7 @@ SchemaTypeTuple::validate(
 	const char *				scope,
 	const char *				name,
 	const char *				typeName,
-	const char *				origTypeName,
+	const char *,
 	const StringVector &		typeArgs,
 	int							indentLevel) const
 {
@@ -102,7 +102,6 @@ SchemaTypeTuple::validate(
 	int							typeArgsSize;
 	int							elemNameIndex;
 	int							typeIndex;
-	int							rowNum;
 	int							numElems;
 	SchemaType *				elemTypeDef;
 	StringVector				emptyArgs;
@@ -136,7 +135,6 @@ SchemaTypeTuple::validate(
 	for (i = 0; i < listSize; i++) {
 		typeIndex     = (i * 2 + 0) % typeArgsSize;
 		elemNameIndex = (i * 2 + 1) % typeArgsSize;
-		rowNum = (i / numElems) + 1;
 		elemValue = list[i];
 		elemTypeName = typeArgs[typeIndex];
 		elemTypeDef = findType(sv, elemTypeName);

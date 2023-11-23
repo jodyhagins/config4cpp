@@ -45,11 +45,11 @@ public:
 
 protected:
 	virtual void checkRule(
-		const SchemaValidator *	sv,
-		const Configuration *	cfg,
-		const char *			typeName,
-		const StringVector &	typeArgs,
-		const char *			rule) const
+		const SchemaValidator *,
+		const Configuration *,
+		const char *,
+		const StringVector &,
+		const char *) const
 	{ }
 };
 

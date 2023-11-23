@@ -31,7 +31,7 @@ namespace CONFIG4CPP_NAMESPACE {
 void
 SchemaTypeList::checkRule(
 	const SchemaValidator *		sv,
-	const Configuration *		cfg,
+	const Configuration *,
 	const char *				typeName,
 	const StringVector &		typeArgs,
 	const char *				rule) const
@@ -85,8 +85,8 @@ SchemaTypeList::validate(
 	const Configuration *		cfg,
 	const char *				scope,
 	const char *				name,
-	const char *				typeName,
-	const char *				origTypeName,
+	const char *,
+	const char *,
 	const StringVector &		typeArgs,
 	int							indentLevel) const
 {

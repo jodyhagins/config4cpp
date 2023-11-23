@@ -29,7 +29,7 @@ namespace CONFIG4CPP_NAMESPACE {
 
 void
 SchemaTypeMemorySizeKB::checkRule(
-	const SchemaValidator *		sv,
+	const SchemaValidator *,
 	const Configuration *		cfg,
 	const char *				typeName,
 	const StringVector &		typeArgs,
@@ -85,15 +85,14 @@ SchemaTypeMemorySizeKB::checkRule(
 
 bool
 SchemaTypeMemorySizeKB::isA(
-	const SchemaValidator *		sv,
+	const SchemaValidator *,
 	const Configuration *		cfg,
 	const char *				value,
-	const char *				typeName,
+	const char *,
 	const StringVector &		typeArgs,
-	int							indentLevel,
+	int,
 	StringBuffer &				errSuffix) const
 {
-	bool						result;
 	int							min;
 	int							max;
 	int							val;

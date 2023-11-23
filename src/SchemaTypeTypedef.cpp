@@ -29,8 +29,8 @@ namespace CONFIG4CPP_NAMESPACE {
 
 void
 SchemaTypeTypedef::checkRule(
-	const SchemaValidator *		sv,
-	const Configuration *		cfg,
+	const SchemaValidator *,
+	const Configuration *,
 	const char *				typeName,
 	const StringVector &		typeArgs,
 	const char *				rule) const
@@ -52,7 +52,7 @@ SchemaTypeTypedef::validate(
 	const Configuration *		cfg,
 	const char *				scope,
 	const char *				name,
-	const char *				typeName,
+	const char *,
 	const char *				origTypeName,
 	const StringVector &		typeArgs,
 	int							indentLevel) const
@@ -75,7 +75,7 @@ SchemaTypeTypedef::isA(
 	const SchemaValidator *		sv,
 	const Configuration *		cfg,
 	const char *				value,
-	const char *				typeName,
+	const char *,
 	const StringVector &		typeArgs,
 	int							indentLevel,
 	StringBuffer &				errSuffix) const

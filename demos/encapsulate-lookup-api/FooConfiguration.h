@@ -56,7 +56,7 @@ public:
 	// Constructor and destructor
 	//--------
 	FooConfiguration();
-	~FooConfiguration();
+	virtual ~FooConfiguration();
 
 	void parse(const char * cfgSource, const char * scope = "");
 

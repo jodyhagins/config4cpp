@@ -30,7 +30,7 @@ namespace CONFIG4CPP_NAMESPACE {
 void
 SchemaTypeTable::checkRule(
 	const SchemaValidator *		sv,
-	const Configuration *		cfg,
+	const Configuration *,
 	const char *				typeName,
 	const StringVector &		typeArgs,
 	const char *				rule) const
@@ -89,7 +89,7 @@ SchemaTypeTable::validate(
 	const char *				scope,
 	const char *				name,
 	const char *				typeName,
-	const char *				origTypeName,
+	const char *,
 	const StringVector &		typeArgs,
 	int							indentLevel) const
 {

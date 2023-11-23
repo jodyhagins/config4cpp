@@ -29,8 +29,8 @@ namespace CONFIG4CPP_NAMESPACE {
 
 void
 SchemaTypeIntWithUnits::checkRule(
-	const SchemaValidator *		sv,
-	const Configuration *		cfg,
+	const SchemaValidator *,
+	const Configuration *,
 	const char *				typeName,
 	const StringVector &		typeArgs,
 	const char *				rule) const
@@ -48,12 +48,12 @@ SchemaTypeIntWithUnits::checkRule(
 
 bool
 SchemaTypeIntWithUnits::isA(
-	const SchemaValidator *		sv,
+	const SchemaValidator *,
 	const Configuration *		cfg,
 	const char *				value,
-	const char *				typeName,
+	const char *,
 	const StringVector &		typeArgs,
-	int							indentLevel,
+	int,
 	StringBuffer &				errSuffix) const
 {
 	const char **				allowedUnits;

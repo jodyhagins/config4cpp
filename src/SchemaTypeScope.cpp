@@ -29,8 +29,8 @@ namespace CONFIG4CPP_NAMESPACE {
 
 void
 SchemaTypeScope::checkRule(
-	const SchemaValidator *		sv,
-	const Configuration *		cfg,
+	const SchemaValidator *,
+	const Configuration *,
 	const char *				typeName,
 	const StringVector &		typeArgs,
 	const char *				rule) const
@@ -48,14 +48,14 @@ SchemaTypeScope::checkRule(
 
 void
 SchemaTypeScope::validate(
-	const SchemaValidator *		sv,
+	const SchemaValidator *,
 	const Configuration *		cfg,
 	const char *				scope,
 	const char *				name,
-	const char *				typeName,
-	const char *				origTypeName,
-	const StringVector &		typeArgs,
-	int							indentLevel) const
+	const char *,
+	const char *,
+	const StringVector &,
+	int) const
 {
 	cfg->lookupScope(scope, name);
 }

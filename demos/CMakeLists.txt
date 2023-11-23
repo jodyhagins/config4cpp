@@ -1,0 +1,5 @@
+add_subdirectory(encapsulate-lookup-api)
+add_subdirectory(extended-schema-validator)
+add_subdirectory(log-level)
+add_subdirectory(recipes)
+add_subdirectory(simple-encapsulation)

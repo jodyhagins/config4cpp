@@ -29,7 +29,7 @@ namespace CONFIG4CPP_NAMESPACE {
 
 void
 SchemaTypeDurationMicroseconds::checkRule(
-	const SchemaValidator *		sv,
+	const SchemaValidator *,
 	const Configuration *		cfg,
 	const char *				typeName,
 	const StringVector &		typeArgs,
@@ -91,12 +91,12 @@ SchemaTypeDurationMicroseconds::checkRule(
 
 bool
 SchemaTypeDurationMicroseconds::isA(
-	const SchemaValidator *		sv,
+	const SchemaValidator *,
 	const Configuration *		cfg,
 	const char *				value,
-	const char *				typeName,
+	const char *,
 	const StringVector &		typeArgs,
-	int							indentLevel,
+	int,
 	StringBuffer &				errSuffix) const
 {
 	bool						ok;

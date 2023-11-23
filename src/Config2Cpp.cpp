@@ -60,6 +60,7 @@ Config2Cpp::Config2Cpp(const char * progName)
 	m_className           = 0;
 	m_cppExt              = 0;
 	m_hExt                = 0;
+	m_outDir              = 0;
 	m_wantSingleton       = false;
 	m_wantSchema          = true;
 	m_namespaceArraySize  = 0;
@@ -85,6 +86,7 @@ Config2Cpp::~Config2Cpp()
 	delete [] m_className;
 	delete [] m_cppExt;
 	delete [] m_hExt;
+	delete [] m_outDir;
 	for (i = 0; i < m_namespaceArraySize; i++) {
 		delete [] m_namespaceArray[i];
 	}
@@ -149,6 +151,13 @@ Config2Cpp::parseCmdLineArgs(int argc, char ** argv)
 			}
 			m_hExt = stringCopy(argv[i+1]);
 			i++;
+		} else if (strcmp(argv[i], "-outdir") == 0) {
+			if (i == argc-1) {
+				usage("");
+				return false;
+			}
+			m_outDir = stringCopy(argv[i+1]);
+			i++;
 		} else if (strcmp(argv[i], "-namespace") == 0) {
 			if (i == argc-1) {
 				usage("");
@@ -176,6 +185,9 @@ Config2Cpp::parseCmdLineArgs(int argc, char ** argv)
 	if (m_hExt == 0) {
 		m_hExt = stringCopy(".h");
 	}
+	if (m_outDir == 0) {
+		m_outDir = stringCopy("");
+	}
 	return true;
 }
 
@@ -199,8 +211,8 @@ Config2Cpp::generateFiles(
 	FILE *					cppFile;
 	FILE *					hFile;
 
-	cppFileName = stringConcat(m_className, m_cppExt);
-	hFileName   = stringConcat(m_className, m_hExt);
+	cppFileName = stringConcat(m_outDir, m_className, m_cppExt);
+	hFileName   = stringConcat(m_outDir, m_className, m_hExt);
 
 	//--------
 	// Open all the files
@@ -663,7 +675,7 @@ stringConcat(const char * s1, const char * s2, const char * s3)
 
 	len = strlen(s1) + strlen(s2) + strlen(s3);
 	result = new char[len + 1];
-	sprintf(result, "%s%s%s", s1, s2, s3);
+	snprintf(result, len + 1, "%s%s%s", s1, s2, s3);
 	return result;
 }
 
