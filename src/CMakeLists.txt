@@ -62,20 +62,24 @@ target_include_directories(config4cpp_lib
 set_property(TARGET config4cpp_lib PROPERTY OUTPUT_NAME config4cpp)
 target_compile_options(config4cpp_lib
     PRIVATE -Werror -Wall -Wextra)
+add_library(Config4cpp::lib ALIAS config4cpp_lib)
 
 add_executable(config2cpp-nocheck
     config2cpp-nocheck-main.cpp
     Config2Cpp.cpp)
 target_include_directories(config2cpp-nocheck
     PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../include")
+add_executable(Config4cpp::config2cpp-nocheck ALIAS config2cpp-nocheck)
 
 add_executable(config4cpp
     config4cpp.cpp)
 target_link_libraries(config4cpp
     PRIVATE config4cpp_lib)
+add_executable(Config4cpp::config4cpp ALIAS config4cpp)
 
 add_executable(config2cpp
     config2cpp-main.cpp
     Config2Cpp.cpp)
 target_link_libraries(config2cpp
     PRIVATE config4cpp_lib)
+add_executable(Config4cpp::config2cpp ALIAS config2cpp)
