@@ -4,7 +4,7 @@ add_executable(recipes-demo
     RecipeFileParser.cpp)
 
 target_link_libraries(recipes-demo
-    PUBLIC config4cpp_lib)
+    PRIVATE config4cpp_lib)
 
 set_property(TARGET recipes-demo
     PROPERTY OUTPUT_NAME demo)

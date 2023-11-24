@@ -15,8 +15,8 @@ add_executable(encapsulate-lookup-api-demo
     FallbackConfiguration.cpp
     "${CMAKE_CURRENT_BINARY_DIR}/FallbackConfiguration.cpp")
 target_link_libraries(encapsulate-lookup-api-demo
-    PUBLIC config4cpp_lib)
+    PRIVATE config4cpp_lib)
 target_include_directories(encapsulate-lookup-api-demo
-    PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+    PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 set_property(TARGET encapsulate-lookup-api-demo
     PROPERTY OUTPUT_NAME demo)

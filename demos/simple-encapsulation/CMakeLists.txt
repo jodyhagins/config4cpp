@@ -15,8 +15,8 @@ add_executable(simple-encapsulation-demo
     FallbackConfiguration.cpp
     "${CMAKE_CURRENT_BINARY_DIR}/FallbackConfiguration.cpp")
 target_link_libraries(simple-encapsulation-demo
-    PUBLIC config4cpp_lib)
+    PRIVATE config4cpp_lib)
 target_include_directories(simple-encapsulation-demo
-    PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+    PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 set_property(TARGET simple-encapsulation-demo
     PROPERTY OUTPUT_NAME demo)

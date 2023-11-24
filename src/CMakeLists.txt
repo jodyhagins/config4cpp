@@ -1,11 +1,11 @@
 add_custom_command(
     OUTPUT DefaultSecurity.cpp DefaultSecurity.h
     COMMAND config2cpp-nocheck
-        -cfg ${CMAKE_CURRENT_SOURCE_DIR}/DefaultSecurity.cfg
+        -cfg "${CMAKE_CURRENT_SOURCE_DIR}/DefaultSecurity.cfg"
         -class DefaultSecurity
         -namespace CONFIG4CPP_NAMESPACE
         -outdir "${CMAKE_CURRENT_BINARY_DIR}/"
-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/DefaultSecurity.cfg
+    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/DefaultSecurity.cfg"
     VERBATIM)
 
 add_library(config4cpp_lib
@@ -53,21 +53,29 @@ add_library(config4cpp_lib
     SchemaTypeTable.cpp
     SchemaTypeTuple.cpp
     SchemaTypeTypedef.cpp)
-target_include_directories(config4cpp_lib PUBLIC ${CMAKE_SOURCE_DIR}/include)
-target_include_directories(config4cpp_lib PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(config4cpp_lib
+    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../include")
+target_include_directories(config4cpp_lib
+    SYSTEM INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/../include")
+target_include_directories(config4cpp_lib
+    PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 set_property(TARGET config4cpp_lib PROPERTY OUTPUT_NAME config4cpp)
-target_compile_options(config4cpp_lib PRIVATE -Werror -Wall -Wextra)
+target_compile_options(config4cpp_lib
+    PRIVATE -Werror -Wall -Wextra)
 
 add_executable(config2cpp-nocheck
     config2cpp-nocheck-main.cpp
     Config2Cpp.cpp)
-target_include_directories(config2cpp-nocheck PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(config2cpp-nocheck
+    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../include")
 
 add_executable(config4cpp
     config4cpp.cpp)
-target_link_libraries(config4cpp PUBLIC config4cpp_lib)
+target_link_libraries(config4cpp
+    PRIVATE config4cpp_lib)
 
 add_executable(config2cpp
     config2cpp-main.cpp
     Config2Cpp.cpp)
-target_link_libraries(config2cpp PUBLIC config4cpp_lib)
+target_link_libraries(config2cpp
+    PRIVATE config4cpp_lib)
