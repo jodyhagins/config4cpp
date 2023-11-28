@@ -807,7 +807,6 @@ ConfigurationImpl::listFullyScopedNames(
 		scopeObj = item->scopeVal();
 	}
 	scopeObj->listFullyScopedNames(typeMask, recursive, filterPatterns, names);
-	names.sort();
 }
 
 
@@ -877,7 +876,6 @@ ConfigurationImpl::listLocallyScopedNames(
 		scopeObj = item->scopeVal();
 	}
 	scopeObj->listLocallyScopedNames(typeMask, recursive, filterPatterns,names);
-	names.sort();
 }
 
 
