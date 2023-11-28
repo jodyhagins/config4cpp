@@ -142,6 +142,7 @@ ConfigScope::addOrReplaceString(
 		newEntry = new ConfigScopeEntry(name, new ConfigItem(name, str),
 										nextEntry);
 		entry->m_next = newEntry;
+		m_orderedEntries.push_back(newEntry);
 	}
 	return true;
 }
@@ -191,6 +192,7 @@ ConfigScope::addOrReplaceList(
 		newEntry = new ConfigScopeEntry(name, new ConfigItem(name, list),
 		                                 nextEntry);
 		entry->m_next = newEntry;
+		m_orderedEntries.push_back(newEntry);
 	}
 	return true;
 }
@@ -241,6 +243,7 @@ ConfigScope::addOrReplaceList(
 		newEntry = new ConfigScopeEntry(name, new ConfigItem(name, array,size),
 										nextEntry);
 		entry->m_next = newEntry;
+		m_orderedEntries.push_back(newEntry);
 	}
 	return true;
 }
@@ -289,6 +292,7 @@ ConfigScope::ensureScopeExists(
 		newEntry = new ConfigScopeEntry(name, new ConfigItem(name, scope),
 										nextEntry);
 		entry->m_next = newEntry;
+		m_orderedEntries.push_back(newEntry);
 	}
 	return true;
 }
@@ -379,6 +383,12 @@ ConfigScope::removeItem(const char * name)
 			victim = entry->m_next;
 			entry->m_next = victim->m_next;
 			victim->m_next = 0;
+			m_orderedEntries.erase(
+				std::remove(
+					m_orderedEntries.begin(),
+					m_orderedEntries.end(),
+					victim),
+				m_orderedEntries.end());
 			delete victim;
 			m_numEntries --;
 			return true;
@@ -434,16 +444,13 @@ ConfigScope::listLocalNames(
 	vec.ensureCapacity(m_numEntries);
 	countWanted = 0;
 	countUnwanted = 0;
-	for (i = 0; i < m_tableSize; i++) {
-		entry = m_table[i].m_next;
-		while (entry) {
-			if (entry->type() & typeMask) {
-				vec.add(entry->name());
-				countWanted++;
-			} else {
-				countUnwanted++;
-			}
-			entry = entry->m_next;
+	for (i = 0; i < int(m_orderedEntries.size()); i++) {
+		entry = m_orderedEntries[i];
+		if (entry->type() & typeMask) {
+			vec.add(entry->name());
+			countWanted++;
+		} else {
+			countUnwanted++;
 		}
 	}
         (void)countWanted;
@@ -476,25 +483,22 @@ ConfigScope::listScopedNamesHelper(
 	// their locally-scoped names into the StringVector
 	//--------
 	vec.ensureCapacity(vec.length() + m_numEntries);
-	for (i = 0; i < m_tableSize; i++) {
-		entry = m_table[i].m_next;
-		while (entry) {
-			scopedName = prefix;
-			if (prefix[0] != '\0') {
-				scopedName.append(".");
-			}
-			scopedName.append(entry->name());
-			if ((entry->type() & typeMask)
-			    && listFilter(scopedName.c_str(), filterPatterns))
-			{
-				vec.add(scopedName);
-			}
-			if (recursive && entry->type() == Configuration::CFG_SCOPE) {
-				entry->item()->scopeVal()->listScopedNamesHelper(
-												scopedName.c_str(), typeMask,
-												true, filterPatterns, vec);
-			}
-			entry = entry->m_next;
+	for (i = 0; i < int(m_orderedEntries.size()); i++) {
+		entry = m_orderedEntries[i];
+		scopedName = prefix;
+		if (prefix[0] != '\0') {
+			scopedName.append(".");
+		}
+		scopedName.append(entry->name());
+		if ((entry->type() & typeMask)
+		    && listFilter(scopedName.c_str(), filterPatterns))
+		{
+			vec.add(scopedName);
+		}
+		if (recursive && entry->type() == Configuration::CFG_SCOPE) {
+			entry->item()->scopeVal()->listScopedNamesHelper(
+											scopedName.c_str(), typeMask,
+											true, filterPatterns, vec);
 		}
 	}
 }

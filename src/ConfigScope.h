@@ -32,6 +32,11 @@
 #include <config4cpp/ConfigurationException.h>
 #include "ConfigScopeEntry.h"
 
+// The base distribution prohibits the standard library, due to compatibility
+// reasons.  I think that is mostly in the interface itself, so this should
+// not be a big problemas it is an imlpementation-only header.  But, I'm
+// going to use it anyway because I'm not going to write a class for this.
+#include <vector>
 
 namespace CONFIG4CPP_NAMESPACE {
 
@@ -140,6 +145,7 @@ protected:
 	ConfigScopeEntry *	m_table;
 	int					m_tableSize;
 	int					m_numEntries;
+	std::vector<ConfigScopeEntry *> m_orderedEntries;
 
 	//--------
 	// Not implemented.
