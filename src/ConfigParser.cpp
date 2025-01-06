@@ -903,6 +903,7 @@ ConfigParser::parseRhsAssignStmt(
 	case ConfigLex::LEX_FUNC_GETENV_SYM:
 	case ConfigLex::LEX_FUNC_EXEC_SYM:
 	case ConfigLex::LEX_FUNC_JOIN_SYM:
+	case ConfigLex::LEX_FUNC_CALL_SYM:
 	case ConfigLex::LEX_FUNC_READ_FILE_SYM:
 	case ConfigLex::LEX_FUNC_REPLACE_SYM:
 	case ConfigLex::LEX_FUNC_OS_TYPE_SYM:
@@ -1050,6 +1051,9 @@ ConfigParser::parseString(StringBuffer & str)
 		break;
 	case ConfigLex::LEX_FUNC_JOIN_SYM:
 		parseJoin(str);
+		break;
+	case ConfigLex::LEX_FUNC_CALL_SYM:
+		parseCall(str);
 		break;
 	case ConfigLex::LEX_FUNC_READ_FILE_SYM:
 		parseReadFile(str);
@@ -1276,6 +1280,72 @@ ConfigParser::parseJoin(StringBuffer & str)
 			str.append(separator);
 		}
 	}
+}
+
+
+
+//----------------------------------------------------------------------
+// Function:	parseCall()
+//
+// Description: Call    = 'call(' StringExpr ')'
+//                      | 'call(' StringExpr ',' ListExpr ')'
+//----------------------------------------------------------------------
+
+void
+ConfigParser::
+parseCall(StringBuffer & str)
+{
+    StringBuffer name;
+    StringVector arguments;
+
+    accept(ConfigLex::LEX_FUNC_CALL_SYM, "expecting 'call('");
+    parseStringExpr(name);
+    auto iter = m_config->m_call.find(name.c_str());
+    if (iter == m_config->m_call.end()) {
+        StringBuffer msg;
+        msg << "call(\"" << name << "\") failed: not registered";
+        throw ConfigurationException(msg.c_str());
+    }
+    arguments.add(name);
+    if (m_token.type() == ConfigLex::LEX_COMMA_SYM) {
+        StringVector args;
+        accept(ConfigLex::LEX_COMMA_SYM, "expecting ','");
+        parseListExpr(args);
+        arguments.add(args);
+    }
+    if (iter->second.first >= 0 &&
+        iter->second.first + 1 != arguments.length())
+    {
+        StringBuffer msg;
+        msg << "call(\"" << arguments[0] << "\"";
+        char const * sep = ", [";
+        for (int i = 1; i < arguments.length(); ++i) {
+            msg << sep << '"' << arguments[i] << '"';
+            sep = ", ";
+        }
+        if (arguments.length() > 1) {
+            msg << ']';
+        }
+        msg << ") failed: expected exactly " << iter->second.first
+            << " arguments";
+        throw ConfigurationException(msg.c_str());
+    }
+    accept(ConfigLex::LEX_CLOSE_PAREN_SYM, "expecting ')'");
+
+    str.empty();
+    try {
+        iter->second.second(str, arguments);
+    } catch (std::exception const & ex) {
+        StringBuffer msg;
+        msg << "call(\"" << name << "\") failed: exception: " << ex.what();
+        throw ConfigurationException(msg.c_str());
+    } catch (ConfigurationException const &) {
+        throw;
+    } catch (...) {
+        StringBuffer msg;
+        msg << "call(\"" << name << "\") failed: unknown exception";
+        throw ConfigurationException(msg.c_str());
+    }
 }
 
 

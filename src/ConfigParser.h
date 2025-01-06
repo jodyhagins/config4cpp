@@ -136,6 +136,7 @@ protected:
 	void		parseSiblingScope(StringBuffer & str);
 	void		parseExec(StringBuffer & str);
 	void		parseJoin(StringBuffer & str);
+	void		parseCall(StringBuffer & str);
 	void		parseReplace(StringBuffer & str);
 	void		parseSplit(StringVector & str);
 	void		parseListExpr(StringVector & expr);

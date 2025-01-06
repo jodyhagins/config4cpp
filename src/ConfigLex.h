@@ -68,7 +68,8 @@ public:
 			LEX_FUNC_READ_FILE_SYM        = 211,
 			LEX_FUNC_REPLACE_SYM          = 212,
 			LEX_FUNC_SIBLING_SCOPE_SYM    = 213,
-			LEX_FUNC_SPLIT_SYM            = 214
+			LEX_FUNC_SPLIT_SYM            = 214,
+			LEX_FUNC_CALL_SYM             = 215,
 	};
 
 	//--------

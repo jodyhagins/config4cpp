@@ -60,6 +60,7 @@ static LexBase::FuncInfo	funcInfoArray[] = {
 //----------------------------------------------------------------------
 // spelling            type             symbol
 //----------------------------------------------------------------------
+  {"call(",            LexBase::STRING_FUNC, ConfigLex::LEX_FUNC_CALL_SYM},
   {"configFile(",      LexBase::STRING_FUNC, ConfigLex::LEX_FUNC_CONFIG_FILE_SYM},
   {"configType(",      LexBase::STRING_FUNC, ConfigLex::LEX_FUNC_CONFIG_TYPE_SYM},
   {"exec(",            LexBase::STRING_FUNC, ConfigLex::LEX_FUNC_EXEC_SYM},

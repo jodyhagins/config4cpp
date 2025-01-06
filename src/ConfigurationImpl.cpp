@@ -612,6 +612,22 @@ ConfigurationImpl::empty()
 
 
 //----------------------------------------------------------------------
+// Function:	addCallable()
+//
+// Description:	Add a callable function
+//----------------------------------------------------------------------
+
+void
+ConfigurationImpl::addCallable(
+    char const * name,
+    int num_args,
+    std::function<void(StringBuffer &, StringVector const &)> callable)
+{
+    m_call[name] = std::make_pair(num_args, std::move(callable));
+}
+
+
+//----------------------------------------------------------------------
 // Function:	lookup()
 //
 // Description:	
@@ -960,7 +976,6 @@ ConfigurationImpl::lookupList(
 {
 	Configuration::Type	 	type;
 	StringBuffer			msg;
-	int						i;
 	StringBuffer			fullyScopedName;
 	
 	mergeNames(scope, localName, fullyScopedName);
@@ -970,10 +985,7 @@ ConfigurationImpl::lookupList(
 		break;
 	case Configuration::CFG_NO_VALUE:
 		arraySize = defaultArraySize;
-		array = new const char *[arraySize];
-		for (i = 0; i < arraySize; i++) {
-			array[i] = defaultArray[i];
-		}
+		array = defaultArray;
 		break;
 	case Configuration::CFG_SCOPE:
 		msg << fileName() << ": " << "'" << fullyScopedName

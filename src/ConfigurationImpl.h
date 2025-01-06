@@ -33,6 +33,8 @@
 #include "ConfigScope.h"
 #include "UidIdentifierProcessor.h"
 
+#include <string>
+#include <unordered_map>
 
 namespace CONFIG4CPP_NAMESPACE {
 
@@ -494,6 +496,10 @@ public:
 					const char *			localName);
 	virtual void empty();
 
+        virtual void addCallable(
+            char const * name,
+            int num_args,
+            std::function<void(StringBuffer &, StringVector const &)>);
 
 protected:
 	friend class ConfigParser;
@@ -584,6 +590,12 @@ protected:
 	ConfigurationImpl *			m_fallbackCfg;
 	bool						m_amOwnerOfSecurityCfg;
 	bool						m_amOwnerOfFallbackCfg;
+        std::unordered_map<
+            std::string,
+            std::pair<
+                int,
+                std::function<void(StringBuffer &, StringVector const &)>>>
+            m_call;
 
 private:
 	//--------

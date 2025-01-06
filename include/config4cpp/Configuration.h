@@ -38,7 +38,7 @@
 #include <config4cpp/StringVector.h>
 #include <stddef.h>
 
-
+#include <functional>
 
 
 
@@ -50,7 +50,7 @@ namespace CONFIG4CPP_NAMESPACE {
 
 struct EnumNameAndValue {
 	const char *	name;
-	int				value;
+	intmax_t				value;
 };
 
 
@@ -524,6 +524,17 @@ public:
 
 	virtual void empty() = 0;
 
+        void addCallable(
+            char const * name,
+            std::function<void(StringBuffer &, StringVector const &)> callable)
+        {
+            addCallable(name, -1, std::move(callable));
+        }
+
+        virtual void addCallable(
+            char const * name,
+            int num_args,
+            std::function<void(StringBuffer &, StringVector const &)>) = 0;
 protected:
 	//--------
 	// Available only to the implementation subclass
