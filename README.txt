@@ -1,3 +1,31 @@
+This repository is NOT the official place for Config4Cpp, and it is not a fork,
+as there is no official repository that I can find.  The original source was
+pulled from www.config4star.org, and put into this github repository.
+
+I committed the original version 1.2 sources, then added some mininal cmake
+stuff to get it to build.  I then have made some minor changes that make it
+a bit easier for me to use.  I'm not opposed to using modern C++ and the
+standard library.
+
+Currently, I don't care about performance much when processing configuration
+stuff, but the original, and especially the usability extensions are not
+very performant.  One day I may do a rewrite.  However, there are not a lot
+of good existing tests, and I'm a bit trepidatious about doing so.
+
+I use cmake with FetchContent.  For example,
+
+    message(STATUS "Processing third-party config4cpp...")
+    FetchContent_Declare(
+        config4cpp
+        GIT_REPOSITORY https://github.com/jodyhagins/config4cpp.git
+        GIT_TAG main
+        SYSTEM)
+    FetchContent_MakeAvailable(config4cpp)
+
+
+Everything below is from the original readme.
+
+
 Documentation
 -------------
 
