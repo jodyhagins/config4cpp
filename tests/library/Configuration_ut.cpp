@@ -253,6 +253,30 @@ test_unknown_callable()
 }
 
 void
+test_conditional_callable()
+{
+    cfg::ext::Configuration config;
+    config->addCallable(
+        "foo",
+        [&](cfg::StringBuffer & str, cfg::StringVector const &) {
+            str = "blargy";
+        });
+    config.parse(
+        cfg::ext::Configuration::INPUT_STRING,
+        R"(foo="bar";
+               @if (isCallable("bar")) {
+                   b0=call("bar");
+               }
+               @if (isCallable("foo")) {
+                   f0=call("foo");
+               })");
+
+    EXPECT(not config.lookupString("b0"));
+    EXPECT(config.lookupString("f0")) &&
+        EXPECT_EQ("blargy"s, *config.lookupString("f0"));
+}
+
+void
 test_callable_with_expected_num_args()
 {
     cfg::ext::Configuration config;
@@ -287,6 +311,7 @@ Main(int argc, char * argv[])
     test_valid_callables();
     test_unknown_callable();
     test_callable_with_expected_num_args();
+    test_conditional_callable();
     return 0;
 }
 

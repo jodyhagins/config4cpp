@@ -612,6 +612,12 @@ ConfigParser::parseTerminalCondition()
 
 		}
 	}
+	if (m_token.type() == ConfigLex::LEX_FUNC_IS_CALLABLE_SYM) {
+		m_lex->nextToken(m_token);
+		parseStringExpr(str1);
+		accept(ConfigLex::LEX_CLOSE_PAREN_SYM, "expecting ')'");
+		return m_config->m_call.contains(str1.c_str());
+	}
 	parseStringExpr(str1);
 	switch (m_token.type()) {
 	case ConfigLex::LEX_EQUALS_EQUALS_SYM:

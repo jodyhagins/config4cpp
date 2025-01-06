@@ -70,6 +70,7 @@ public:
 			LEX_FUNC_SIBLING_SCOPE_SYM    = 213,
 			LEX_FUNC_SPLIT_SYM            = 214,
 			LEX_FUNC_CALL_SYM             = 215,
+			LEX_FUNC_IS_CALLABLE_SYM      = 216,
 	};
 
 	//--------

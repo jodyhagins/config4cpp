@@ -66,6 +66,7 @@ static LexBase::FuncInfo	funcInfoArray[] = {
   {"exec(",            LexBase::STRING_FUNC, ConfigLex::LEX_FUNC_EXEC_SYM},
   {"fileToDir(",       LexBase::STRING_FUNC, ConfigLex::LEX_FUNC_FILE_TO_DIR_SYM},
   {"getenv(",          LexBase::STRING_FUNC, ConfigLex::LEX_FUNC_GETENV_SYM},
+  {"isCallable(",  LexBase::BOOL_FUNC,   ConfigLex::LEX_FUNC_IS_CALLABLE_SYM},
   {"isFileReadable(",  LexBase::BOOL_FUNC,   ConfigLex::LEX_FUNC_IS_FILE_READABLE_SYM},
   {"join(",            LexBase::STRING_FUNC, ConfigLex::LEX_FUNC_JOIN_SYM},
   {"osDirSeparator(",  LexBase::STRING_FUNC, ConfigLex::LEX_FUNC_OS_DIR_SEP_SYM},
