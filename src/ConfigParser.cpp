@@ -387,6 +387,11 @@ ConfigParser::parseIncludeStmt()
 							 source.c_str() + strlen("file#"),
 							 trustedCmdLine.c_str(), "", m_config,
 							 ifExistsIsSpecified);
+		} else if (startsWith(source.c_str(), "str#")) {
+			ConfigParser tmp(Configuration::INPUT_STRING,
+							 source.c_str() + strlen("str#"),
+							 trustedCmdLine.c_str(), "", m_config,
+							 ifExistsIsSpecified);
 		} else {
 			ConfigParser tmp(Configuration::INPUT_FILE, source.c_str(),
 							 trustedCmdLine.c_str(), "", m_config,

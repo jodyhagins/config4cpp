@@ -568,6 +568,8 @@ Configuration::parse(const char * str)
 		parse(Configuration::INPUT_EXEC, &(str[5]));
 	} else if (strncmp(str, "file#", 5) == 0) {
 		parse(Configuration::INPUT_FILE, &(str[5]));
+	} else if (strncmp(str, "str#", 4) == 0) {
+		parse(Configuration::INPUT_STRING, &(str[4]));
 	} else {
 		parse(Configuration::INPUT_FILE, str);
 	}
