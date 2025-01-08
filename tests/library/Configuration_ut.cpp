@@ -300,6 +300,24 @@ test_callable_with_expected_num_args()
     EXPECT(not "Expected exception");
 }
 
+void
+test_transform()
+{
+    cfg::ext::Configuration config;
+    config.parse(
+        cfg::ext::Configuration::INPUT_STRING,
+        R"(foo="bar";
+           bar="BAR";
+           f=transform(["foo", "bar"], @arg + "-" + @arg);)");
+
+    if (EXPECT(config.lookupList("f"))) {
+        auto f = *config.lookupList("f");
+        EXPECT_EQ(2u, f.size()) &&
+            EXPECT_EQ("foo-foo"s, f[0]) &&
+            EXPECT_EQ("bar-bar"s, f[1]);
+    }
+}
+
 int
 Main(int argc, char * argv[])
 {
@@ -312,6 +330,7 @@ Main(int argc, char * argv[])
     test_unknown_callable();
     test_callable_with_expected_num_args();
     test_conditional_callable();
+    test_transform();
     return 0;
 }
 

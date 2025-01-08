@@ -118,6 +118,7 @@ protected:
 	void		parseStmtList();
 	void		parseStmt();
 	void		parseIncludeStmt();
+	void		parseIncludeStmt(StringBuffer const &, int line, bool ifExists);
 	void		parseCopyStmt();
 	void		parseRemoveStmt();
 	void		parseErrorStmt();
@@ -139,6 +140,7 @@ protected:
 	void		parseCall(StringBuffer & str);
 	void		parseReplace(StringBuffer & str);
 	void		parseSplit(StringVector & str);
+	void		parseTransform(StringVector & str);
 	void		parseListExpr(StringVector & expr);
 	void		parseList(StringVector & expr);
 	void		parseStringExprList(StringVector & list);
@@ -156,6 +158,7 @@ protected:
 	ConfigurationImpl *		m_config;
 	bool					m_errorInIncludedFile;
 	StringBuffer			m_fileName;
+	char const *			m_arg;
 };
 
 

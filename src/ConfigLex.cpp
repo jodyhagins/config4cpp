@@ -38,6 +38,7 @@ static LexBase::KeywordInfo	keywordInfoArray[] = {
 //----------------------------------------------------------------------
 // spelling      symbol
 //----------------------------------------------------------------------
+  {"@arg",       ConfigLex::LEX_ARG_SYM},
   {"@copyFrom",  ConfigLex::LEX_COPY_FROM_SYM},
   {"@else",      ConfigLex::LEX_ELSE_SYM},
   {"@elseIf",    ConfigLex::LEX_ELSE_IF_SYM},
@@ -76,6 +77,7 @@ static LexBase::FuncInfo	funcInfoArray[] = {
   {"replace(",         LexBase::STRING_FUNC, ConfigLex::LEX_FUNC_REPLACE_SYM},
   {"siblingScope(",    LexBase::STRING_FUNC, ConfigLex::LEX_FUNC_SIBLING_SCOPE_SYM},
   {"split(",           LexBase::LIST_FUNC,   ConfigLex::LEX_FUNC_SPLIT_SYM},
+  {"transform(",       LexBase::LIST_FUNC,   ConfigLex::LEX_FUNC_TRANSFORM_SYM},
 };
 
 const static int funcInfoArraySize = sizeof(funcInfoArray) / sizeof(funcInfoArray[0]);

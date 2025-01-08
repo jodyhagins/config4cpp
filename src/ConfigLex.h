@@ -52,6 +52,7 @@ public:
 			LEX_INCLUDE_SYM               = 108,
 			LEX_MATCHES_SYM               = 109,
 			LEX_REMOVE_SYM                = 110,
+			LEX_ARG_SYM                   = 111,
 			//--------
 			// Now, functions
 			//--------
@@ -71,6 +72,7 @@ public:
 			LEX_FUNC_SPLIT_SYM            = 214,
 			LEX_FUNC_CALL_SYM             = 215,
 			LEX_FUNC_IS_CALLABLE_SYM      = 216,
+			LEX_FUNC_TRANSFORM_SYM        = 217,
 	};
 
 	//--------

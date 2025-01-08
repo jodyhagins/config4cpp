@@ -121,6 +121,7 @@ ConfigParser::ConfigParser(
 	// Initialise instance variables
 	//--------
 	m_config = config;
+	m_arg = nullptr;
 	m_errorInIncludedFile = false;
 	switch (sourceType) {
 	case Configuration::INPUT_FILE:
@@ -313,44 +314,14 @@ ConfigParser::parseStmt()
 //----------------------------------------------------------------------
 
 void
-ConfigParser::parseIncludeStmt()
+ConfigParser::parseIncludeStmt(
+	StringBuffer const & source,
+	int includeLineNum,
+	bool ifExistsIsSpecified)
 {
-	StringBuffer		source;
 	StringBuffer		msg;
-	int					includeLineNum;
-	bool				ifExistsIsSpecified;
 	const char *		execSource;
 	StringBuffer		trustedCmdLine;
-
-	//--------
-	// Consume the '@include' keyword
-	//--------
-	accept(ConfigLex::LEX_INCLUDE_SYM, "expecting 'include'");
-	if (m_config->getCurrScope() != m_config->rootScope()) {
-		error("The '@include' command cannot be used inside a scope", false);
-		return;
-	}
-	includeLineNum = m_token.lineNum();
-
-	//--------
-	// Consume the source
-	//--------
-	parseStringExpr(source);
-
-	//--------
-	// Check if this is a circular include.
-	//--------
-	m_config->checkForCircularIncludes(source.c_str(), includeLineNum);
-
-	//--------
-	// Consume "@ifExists" if specified
-	//--------
-	if (m_token.type() == ConfigLex::LEX_IF_EXISTS_SYM) {
-		ifExistsIsSpecified = true;
-		m_lex->nextToken(m_token);
-	} else {
-		ifExistsIsSpecified = false;
-	}
 
 	//--------
 	// We get more intuitive error messages if we report a security
@@ -402,6 +373,72 @@ ConfigParser::parseIncludeStmt()
 		msg << ex.c_str() << "\n(included from " << m_fileName << ", line "
 			<< includeLineNum << ")";
 		throw ConfigurationException(msg.c_str());
+	}
+}
+
+void
+ConfigParser::parseIncludeStmt()
+{
+	int					includeLineNum;
+	bool				ifExistsIsSpecified;
+
+	//--------
+	// Consume the '@include' keyword
+	//--------
+	accept(ConfigLex::LEX_INCLUDE_SYM, "expecting 'include'");
+	if (m_config->getCurrScope() != m_config->rootScope()) {
+		error("The '@include' command cannot be used inside a scope", false);
+		return;
+	}
+	includeLineNum = m_token.lineNum();
+
+	//--------
+	// Consume the source
+	//--------
+	auto const type = [&] {
+		switch (m_token.type()) {
+		case ConfigLex::LEX_FUNC_SPLIT_SYM:
+		case ConfigLex::LEX_FUNC_TRANSFORM_SYM:
+		case ConfigLex::LEX_OPEN_BRACKET_SYM:
+			return Configuration::CFG_LIST;
+		case ConfigLex::LEX_IDENT_SYM: {
+			StringVector			expr;
+			Configuration::Type		type;
+			m_config->listValue(m_token.spelling(), m_token.spelling(),
+						expr, type);
+			return type;
+		}
+		}
+		return Configuration::CFG_STRING;
+	}();
+	StringVector sources;
+	if (type == Configuration::CFG_LIST) {
+		parseListExpr(sources);
+	} else {
+		StringBuffer source;
+		parseStringExpr(source);
+		sources.add(source);
+	}
+
+	//--------
+	// Consume "@ifExists" if specified
+	//--------
+	if (m_token.type() == ConfigLex::LEX_IF_EXISTS_SYM) {
+		ifExistsIsSpecified = true;
+		m_lex->nextToken(m_token);
+	} else {
+		ifExistsIsSpecified = false;
+	}
+
+	for (int i = 0; i < sources.length(); ++i) {
+		StringBuffer source = sources[i];
+
+		//--------
+		// Check if this is a circular include.
+		//--------
+		m_config->checkForCircularIncludes(source.c_str(), includeLineNum);
+
+		parseIncludeStmt(source, includeLineNum, ifExistsIsSpecified);
 	}
 
 	//--------
@@ -908,6 +945,7 @@ ConfigParser::parseRhsAssignStmt(
 	switch(m_token.type()) {
 	case ConfigLex::LEX_OPEN_BRACKET_SYM:
 	case ConfigLex::LEX_FUNC_SPLIT_SYM:
+	case ConfigLex::LEX_FUNC_TRANSFORM_SYM:
 		exprType = Configuration::CFG_LIST;
 		break;
 	case ConfigLex::LEX_FUNC_SIBLING_SCOPE_SYM:
@@ -1051,6 +1089,15 @@ ConfigParser::parseString(StringBuffer & str)
 
 	str.empty();
 	switch(m_token.type()) {
+	case ConfigLex::LEX_ARG_SYM:
+		if (m_arg) {
+			accept(ConfigLex::LEX_ARG_SYM, "expecting @arg within transition");
+			str = m_arg;
+		} else {
+			error("@arg used outside transform context");
+			return;
+		}
+		break;
 	case ConfigLex::LEX_FUNC_SIBLING_SCOPE_SYM:
 		parseSiblingScope(str);
 		break;
@@ -1443,6 +1490,49 @@ ConfigParser::parseSplit(StringVector & list)
 
 
 //----------------------------------------------------------------------
+// Function:	parseTransform()
+//
+// Description: Transform	= 'transform(' ListExpr ',' StringExpr ')'
+//----------------------------------------------------------------------
+static char const transformTarget[17] = "\001\377_config4cpp_\377\001";
+static int transformTargetLen = 16;
+void
+ConfigParser::parseTransform(StringVector & list)
+{
+    struct Guard
+    {
+        char const * & p;
+        Guard(char const * & in) : p(in) { p = transformTarget; }
+        ~Guard() { p = nullptr; }
+    } g(m_arg);
+
+    accept(ConfigLex::LEX_FUNC_TRANSFORM_SYM, "expecting 'transform('");
+    StringVector input;
+    parseListExpr(input);
+    accept(ConfigLex::LEX_COMMA_SYM, "expecting ','");
+    StringBuffer replacement;
+    parseStringExpr(replacement);
+    accept(ConfigLex::LEX_CLOSE_PAREN_SYM, "zzexpecting ')'");
+
+    list.empty();
+    for (int i = 0; i < input.length(); ++i) {
+        StringBuffer result;
+        auto s = replacement.c_str();
+        while (auto p = const_cast<char *>(strstr(s, transformTarget))) {
+            *p = '\0';
+            result.append(s);
+            *p = *transformTarget;
+            result.append(input[i]);
+            s = p + transformTargetLen;
+        }
+        result.append(s);
+        list.add(result);
+    }
+}
+
+
+
+//----------------------------------------------------------------------
 // Function:	parseExec()
 //
 // Description:	Exec	= 'exec(' StringExpr ')'
@@ -1537,6 +1627,9 @@ ConfigParser::parseList(StringVector & expr)
 	switch (m_token.type()) {
 	case ConfigLex::LEX_FUNC_SPLIT_SYM:
 		parseSplit(expr);
+		break;
+	case ConfigLex::LEX_FUNC_TRANSFORM_SYM:
+		parseTransform(expr);
 		break;
 	case ConfigLex::LEX_OPEN_BRACKET_SYM:
 		//--------
