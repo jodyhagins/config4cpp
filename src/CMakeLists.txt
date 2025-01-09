@@ -20,7 +20,6 @@ add_library(config4cpp_lib
     AsciiPatternMatch.cpp
     "${CMAKE_CURRENT_BINARY_DIR}/DefaultSecurity.cpp"
     DefaultSecurityConfiguration.cpp
-    ConfigurationException.cpp
     ConfigurationImpl.cpp
     ConfigParser.cpp
     UidIdentifierProcessor.cpp

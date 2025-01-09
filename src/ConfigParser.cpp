@@ -1393,12 +1393,12 @@ parseCall(StringBuffer & str)
     str.empty();
     try {
         iter->second.second(str, arguments);
+    } catch (ConfigurationException const &) {
+        throw;
     } catch (std::exception const & ex) {
         StringBuffer msg;
         msg << "call(\"" << name << "\") failed: exception: " << ex.what();
         throw ConfigurationException(msg.c_str());
-    } catch (ConfigurationException const &) {
-        throw;
     } catch (...) {
         StringBuffer msg;
         msg << "call(\"" << name << "\") failed: unknown exception";

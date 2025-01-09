@@ -30,37 +30,21 @@
 // #include's
 //--------
 #include <config4cpp/namespace.h>
-#include <string.h>
+#include <stdexcept>
 
 
 namespace CONFIG4CPP_NAMESPACE {
 
 class ConfigurationException
+: public std::runtime_error
 {
 public:
-	//--------
-	// Constructors and destructor
-	//--------
-	ConfigurationException(const char * str);
-	ConfigurationException(const ConfigurationException & o);
-	~ConfigurationException();
+	using std::runtime_error::runtime_error;
 
 	//--------
 	// Accessor
 	//--------
-	const char * c_str() const;
-
-private:
-	//--------
-	// Instance variables
-	//--------
-	char *			m_str;
-
-	//--------
-	// The following are unimplemented
-	//--------
-	ConfigurationException();
-	ConfigurationException operator=(const ConfigurationException &);
+	const char * c_str() const { return what(); }
 };
 
 
