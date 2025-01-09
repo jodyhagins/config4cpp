@@ -545,7 +545,7 @@ public:
                 std::string,
                 int,
                 std::function<void(StringBuffer &, StringVector const &)>>>
-        getCallables() = 0;
+        getCallables() const = 0;
 
 protected:
 	//--------
