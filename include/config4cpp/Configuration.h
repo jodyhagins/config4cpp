@@ -39,6 +39,10 @@
 #include <stddef.h>
 
 #include <functional>
+#include <string>
+#include <tuple>
+#include <utility>
+#include <vector>
 
 
 
@@ -535,6 +539,14 @@ public:
             char const * name,
             int num_args,
             std::function<void(StringBuffer &, StringVector const &)>) = 0;
+
+        virtual std::vector<
+            std::tuple<
+                std::string,
+                int,
+                std::function<void(StringBuffer &, StringVector const &)>>>
+        getCallables() = 0;
+
 protected:
 	//--------
 	// Available only to the implementation subclass

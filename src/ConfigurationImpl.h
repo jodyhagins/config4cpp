@@ -501,6 +501,13 @@ public:
             int num_args,
             std::function<void(StringBuffer &, StringVector const &)>);
 
+        virtual std::vector<
+            std::tuple<
+                std::string,
+                int,
+                std::function<void(StringBuffer &, StringVector const &)>>>
+        getCallables() const;
+
 protected:
 	friend class ConfigParser;
 

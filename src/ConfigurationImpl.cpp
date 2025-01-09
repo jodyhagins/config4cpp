@@ -626,6 +626,31 @@ ConfigurationImpl::addCallable(
     m_call[name] = std::make_pair(num_args, std::move(callable));
 }
 
+std::vector<
+    std::tuple<
+        std::string,
+        int,
+        std::function<void(StringBuffer &, StringVector const &)>>>
+ConfigurationImpl::
+getCallables() const
+{
+    std::vector<
+        std::tuple<
+            std::string,
+            int,
+            std::function<void(StringBuffer &, StringVector const &)>>> result;
+    for (auto const & p : m_call) {
+        result.emplace_back(p.first, p.second.first, p.second.second);
+    }
+    std::sort(
+        result.begin(),
+        result.end(),
+        [](auto const & x, auto const & y) {
+            return std::get<0>(x) < std::get<0>(y);
+        });
+    return result;
+}
+
 
 //----------------------------------------------------------------------
 // Function:	lookup()
