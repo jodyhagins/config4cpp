@@ -46,13 +46,19 @@ public:
     Name(ArgTs &&... args)
     requires std::is_constructible_v<std::string, ArgTs...>
     : value(std::forward<ArgTs>(args)...)
-    { }
+    {
+        while (not value.empty() && value.front() == '.') {
+            value.erase(value.begin());
+        }
+    }
 
     char const * c_str() const { return value.c_str(); }
 
     operator char const * () const { return c_str(); }
 
     operator std::string_view () const { return value; }
+
+    bool is_empty() const { return value.empty(); }
 
     Name & pop()
     {
