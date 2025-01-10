@@ -397,6 +397,23 @@ public:
         return std::nullopt;
     }
 
+    std::optional<std::string_view> locateString(Name const & name) const
+    {
+        auto scope = name.scope();
+        auto local_name = name.local_name();
+        char c = '\0';
+        for (;;) {
+            if (auto result = impl->lookupString(scope, local_name, &c);
+                result != &c)
+            {
+                return result;
+            } else if (scope.is_empty()) {
+                return std::nullopt;
+            }
+            scope.pop();
+        }
+    }
+
     std::optional<std::vector<std::string_view>> lookupList(
         Name const & name) const
     {
@@ -408,6 +425,25 @@ public:
             return as_vector<std::string_view>(arr, len);
         } else {
             return std::nullopt;
+        }
+    }
+
+    std::optional<std::vector<std::string_view>> locateList(
+        Name const & name) const
+    {
+        auto scope = name.scope();
+        auto local_name = name.local_name();
+        char const ** arr;
+        int len;
+        char const * defarr[1] = {};
+        for (;;) {
+            impl->lookupList(scope, local_name, arr, len, defarr, 0);
+            if (arr != defarr) {
+                return as_vector<std::string_view>(arr, len);
+            } else if (scope.is_empty()) {
+                return std::nullopt;
+            }
+            scope.pop();
         }
     }
 
