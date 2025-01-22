@@ -318,6 +318,56 @@ test_transform()
     }
 }
 
+void
+test_fallback_config()
+{
+    cfg::ext::Configuration fallback_config;
+    fallback_config.insertString("top", "top value");
+    fallback_config.insertString("a.b.c", "a.b.c value");
+    cfg::ext::Configuration config;
+    config->setFallbackConfiguration(fallback_config.operator->());
+    config.parse(
+        cfg::ext::Configuration::INPUT_STRING,
+        R"(foo=top;
+           bar=a.b.c;)");
+
+    if (auto opt = config.lookupString("foo"); EXPECT(opt)) {
+        EXPECT_EQ("top value"s, *opt);
+    }
+    if (auto opt = config.lookupString("bar"); EXPECT(opt)) {
+        EXPECT_EQ("a.b.c value"s, *opt);
+    }
+}
+
+void
+test_override_config()
+{
+    cfg::ext::Configuration override_config;
+    override_config.insertString("top", "top value");
+    override_config.insertString("a.b.c", "a.b.c value");
+    cfg::ext::Configuration config;
+    config->setOverrideConfiguration(override_config.operator->());
+    config.parse(
+        cfg::ext::Configuration::INPUT_STRING,
+        R"(top="my top";
+           a.b.c="my a.b.c";
+           foo=top;
+           bar=a.b.c;)");
+
+    if (auto opt = config.lookupString("top"); EXPECT(opt)) {
+        EXPECT_EQ("top value"s, *opt);
+    }
+    if (auto opt = config.lookupString("a.b.c"); EXPECT(opt)) {
+        EXPECT_EQ("a.b.c value"s, *opt);
+    }
+    if (auto opt = config.lookupString("foo"); EXPECT(opt)) {
+        EXPECT_EQ("top value"s, *opt);
+    }
+    if (auto opt = config.lookupString("bar"); EXPECT(opt)) {
+        EXPECT_EQ("a.b.c value"s, *opt);
+    }
+}
+
 int
 Main(int argc, char * argv[])
 {
@@ -331,6 +381,8 @@ Main(int argc, char * argv[])
     test_callable_with_expected_num_args();
     test_conditional_callable();
     test_transform();
+    test_fallback_config();
+    test_override_config();
     return 0;
 }
 

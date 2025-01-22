@@ -96,6 +96,13 @@ public:
 					const char *				sourceDescription = "") = 0;
 	virtual const Configuration * getFallbackConfiguration() = 0;
 
+	virtual void setOverrideConfiguration(Configuration * cfg) = 0;
+	virtual void setOverrideConfiguration(
+					Configuration::SourceType	sourceType,
+					const char *				source,
+					const char *				sourceDescription = "") = 0;
+	virtual const Configuration * getOverrideConfiguration() = 0;
+
 	virtual void setSecurityConfiguration(
 					Configuration *		cfg,
 					bool				takeOwnership,

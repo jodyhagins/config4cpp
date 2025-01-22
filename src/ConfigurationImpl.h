@@ -71,6 +71,12 @@ public:
 					const char *					source,
 					const char *					sourceDescription = "");
 	virtual const Configuration * getFallbackConfiguration();
+	virtual void setOverrideConfiguration(Configuration * cfg);
+	virtual void setOverrideConfiguration(
+					Configuration::SourceType		sourceType,
+					const char *					source,
+					const char *					sourceDescription = "");
+	virtual const Configuration * getOverrideConfiguration();
 
 	virtual void setSecurityConfiguration(
 					Configuration *					cfg,
@@ -595,8 +601,10 @@ protected:
 	ConfigScope *				m_currScope;
 	StringVector				m_fileNameStack;
 	ConfigurationImpl *			m_fallbackCfg;
+	ConfigurationImpl *			m_overrideCfg;
 	bool						m_amOwnerOfSecurityCfg;
 	bool						m_amOwnerOfFallbackCfg;
+	bool						m_amOwnerOfOverrideCfg;
         std::unordered_map<
             std::string,
             std::pair<

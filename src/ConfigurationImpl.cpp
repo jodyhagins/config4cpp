@@ -51,7 +51,9 @@ ConfigurationImpl::ConfigurationImpl()
 	m_rootScope            = new ConfigScope(0, "");
 	m_currScope            = m_rootScope;
 	m_fallbackCfg          = 0;
+	m_overrideCfg          = 0;
 	m_amOwnerOfFallbackCfg = false;
+	m_amOwnerOfOverrideCfg = false;
 	m_amOwnerOfSecurityCfg = false;
 	m_securityCfg          = &DefaultSecurityConfiguration::singleton;
 }
@@ -73,6 +75,9 @@ ConfigurationImpl::~ConfigurationImpl()
 	if (m_amOwnerOfFallbackCfg) {
 		m_fallbackCfg->destroy();
 	}
+	if (m_amOwnerOfOverrideCfg) {
+		m_overrideCfg->destroy();
+	}
 }
 
 
@@ -85,6 +90,18 @@ ConfigurationImpl::setFallbackConfiguration(Configuration * cfg)
 	}
 	m_fallbackCfg = static_cast<ConfigurationImpl *>(cfg);
 	m_amOwnerOfFallbackCfg = false;
+}
+
+
+
+void
+ConfigurationImpl::setOverrideConfiguration(Configuration * cfg)
+{
+	if (m_amOwnerOfOverrideCfg) {
+		m_overrideCfg->destroy();
+	}
+	m_overrideCfg = static_cast<ConfigurationImpl *>(cfg);
+	m_amOwnerOfOverrideCfg = false;
 }
 
 
@@ -116,10 +133,45 @@ ConfigurationImpl::setFallbackConfiguration(
 
 
 
+void
+ConfigurationImpl::setOverrideConfiguration(
+	Configuration::SourceType	sourceType,
+	const char *				source,
+	const char *				sourceDescription)
+{
+	Configuration *				cfg;
+	StringBuffer				msg;
+
+	cfg = Configuration::create();
+	try {
+		cfg->parse(sourceType, source, sourceDescription);
+	} catch(const ConfigurationException & ex) {
+		cfg->destroy();
+		msg << "cannot set override configuration: " << ex.c_str();
+		throw ConfigurationException(msg.c_str());
+	}
+
+	if (m_amOwnerOfOverrideCfg) {
+		m_overrideCfg->destroy();
+	}
+	m_overrideCfg = static_cast<ConfigurationImpl *>(cfg);
+	m_amOwnerOfOverrideCfg = true;
+}
+
+
+
 const Configuration *
 ConfigurationImpl::getFallbackConfiguration()
 {
 	return m_fallbackCfg;
+}
+
+
+
+const Configuration *
+ConfigurationImpl::getOverrideConfiguration()
+{
+	return m_overrideCfg;
 }
 
 
@@ -692,6 +744,12 @@ ConfigurationImpl::lookup(
 		scope = m_currScope;
 	}
 	item = 0;
+	if (m_overrideCfg != 0) {
+		item = m_overrideCfg->lookup(fullyScopedName, localName, true, false);
+		if (item) {
+			return item;
+		}
+	}
 	while (scope != 0) {
 		item = lookupHelper(scope, vec);
 		if (item != 0 || !searchOutwards) {
@@ -700,7 +758,7 @@ ConfigurationImpl::lookup(
 		scope = scope->parentScope();
 	}
 	if (item == 0 && m_fallbackCfg != 0) {
-		item = m_fallbackCfg->lookup(localName, localName, true, false);
+		item = m_fallbackCfg->lookup(fullyScopedName, localName, true, false);
 	}
 	return item;
 }
