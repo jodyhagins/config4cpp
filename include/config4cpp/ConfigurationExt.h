@@ -541,6 +541,13 @@ public:
         impl->insertString(name.scope(), name.local_name(), str.c_str());
     }
 
+    template <typename T>
+    auto insert(Name const & name, T const & t)
+    -> decltype(insertString(name, t))
+    {
+        return insertString(name, t);
+    }
+
     void insertList(Name const & name, std::vector<char const *> const & vec)
     {
         impl->insertList(
@@ -559,9 +566,21 @@ public:
         insertList(name, v);
     }
 
+    template <typename T>
+    auto insert(Name const & name, T const & t)
+    -> decltype(insertList(name, t))
+    {
+        return insertList(name, t);
+    }
+
     void ensureScopeExists(Name const & name)
     {
         impl->ensureScopeExists(name.scope(), name.local_name());
+    }
+
+    void insert(Name const & name)
+    {
+        return ensureScopeExists(name);
     }
 
     void remove(Name const & name)
