@@ -90,6 +90,10 @@
 #include <errno.h>
 #include <string.h>
 
+#if defined (CONFIG4CPP_GLOB)
+#include <glob.h>
+#endif
+
 
 namespace CONFIG4CPP_NAMESPACE {
 
@@ -353,20 +357,39 @@ ConfigParser::parseIncludeStmt(
 			ConfigParser tmp(Configuration::INPUT_EXEC, execSource,
 							 trustedCmdLine.c_str(), "", m_config,
 							 ifExistsIsSpecified);
-		} else if (startsWith(source.c_str(), "file#")) {
-			ConfigParser tmp(Configuration::INPUT_FILE,
-							 source.c_str() + strlen("file#"),
-							 trustedCmdLine.c_str(), "", m_config,
-							 ifExistsIsSpecified);
 		} else if (startsWith(source.c_str(), "str#")) {
 			ConfigParser tmp(Configuration::INPUT_STRING,
 							 source.c_str() + strlen("str#"),
 							 trustedCmdLine.c_str(), "", m_config,
 							 ifExistsIsSpecified);
 		} else {
-			ConfigParser tmp(Configuration::INPUT_FILE, source.c_str(),
+			char const * src = source.c_str();
+			if (startsWith(src, "file#")) {
+				src += strlen("file#");
+			}
+#if defined (CONFIG4CPP_GLOB)
+			struct Glob
+			{
+				glob_t glob{};
+				Glob(char const * src) { ::glob(src, GLOB_MARK, nullptr, &glob); }
+				~Glob() { globfree(&glob); }
+			} g(src);
+			if (g.glob.gl_matchc == 0) {
+				ConfigParser tmp(Configuration::INPUT_FILE, src,
+								 trustedCmdLine.c_str(), "", m_config,
+								 ifExistsIsSpecified);
+			} else {
+				for (int i = 0; i < g.glob.gl_matchc; ++i) {
+					ConfigParser tmp(Configuration::INPUT_FILE, g.glob.gl_pathv[i],
+									 trustedCmdLine.c_str(), "", m_config,
+									 ifExistsIsSpecified);
+				}
+			}
+#else
+			ConfigParser tmp(Configuration::INPUT_FILE, src,
 							 trustedCmdLine.c_str(), "", m_config,
 							 ifExistsIsSpecified);
+#endif
 		}
 	} catch(const ConfigurationException & ex) {
 		m_errorInIncludedFile = true;

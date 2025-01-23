@@ -22,6 +22,7 @@ project(config4cpp
     DESCRIPTION "Config4Cpp from http://www.config4star.org"
     LANGUAGES CXX)
 
+option(CONFIG4CPP_GLOB "whether or not @include supports globbing" ON)
 add_subdirectory(src)
 
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)

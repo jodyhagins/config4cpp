@@ -17,6 +17,11 @@ target_link_libraries(Configuration_ut
     PRIVATE config4cpp_lib)
 target_include_directories(Configuration_ut
     PRIVATE "${PROJECT_SOURCE_DIR}")
+target_compile_definitions(Configuration_ut PRIVATE "SOURCE_ROOT=\"${CMAKE_CURRENT_SOURCE_DIR}\"")
+if (CONFIG4CPP_GLOB)
+    target_compile_definitions(Configuration_ut PRIVATE CONFIG4CPP_GLOB)
+endif()
+
 
 add_test(NAME "Configuration Tests"
     COMMAND Configuration_ut)

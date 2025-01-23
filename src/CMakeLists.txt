@@ -61,6 +61,9 @@ target_include_directories(config4cpp_lib
 set_property(TARGET config4cpp_lib PROPERTY OUTPUT_NAME config4cpp)
 target_compile_options(config4cpp_lib
     PRIVATE -Werror -Wall -Wextra)
+if (CONFIG4CPP_GLOB)
+    target_compile_definitions(config4cpp_lib PRIVATE CONFIG4CPP_GLOB)
+endif()
 add_library(Config4cpp::lib ALIAS config4cpp_lib)
 
 add_executable(config2cpp-nocheck

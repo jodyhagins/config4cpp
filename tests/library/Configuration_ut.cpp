@@ -383,6 +383,27 @@ test_override_config()
     }
 }
 
+void
+test_glob_include()
+{
+#if defined(CONFIG4CPP_GLOB)
+    cfg::ext::Configuration config;
+    config.parse(
+        cfg::ext::Configuration::INPUT_STRING,
+        R"(top="my top";
+           a.b.c="my a.b.c";
+           @include ")" SOURCE_ROOT R"(" + "/test*.cfg";
+           )");
+
+    if (auto opt = config.lookupString("test01"); EXPECT(opt)) {
+        EXPECT_EQ("test01 my top"s, *opt);
+    }
+    if (auto opt = config.lookupString("test02"); EXPECT(opt)) {
+        EXPECT_EQ("test02 my top"s, *opt);
+    }
+#endif
+}
+
 int
 Main(int argc, char * argv[])
 {
@@ -398,6 +419,7 @@ Main(int argc, char * argv[])
     test_transform();
     test_fallback_config();
     test_override_config();
+    test_glob_include();
     return 0;
 }
 
