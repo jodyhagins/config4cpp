@@ -166,7 +166,8 @@ listLocallyScopedNames_in_order(Test const & test)
     [&](auto && x) { \
         if (not x) { \
             std::stringstream strm; \
-            strm << "EXPECT(" << #X << ") failed"; \
+            strm << __FILE__ << ": " << __LINE__ << ": EXPECT(" << #X \
+                << ") failed"; \
             throw std::runtime_error(strm.str()); \
         } \
         return true; \
@@ -176,8 +177,9 @@ listLocallyScopedNames_in_order(Test const & test)
     [&](auto && x, auto && y) { \
         if (not (x == y)) { \
             std::stringstream strm; \
-            strm << "EXPECT_EQ(" << #X << ", " << #Y << ") failed: " << '[' \
-                << x << "] != [" << y << ']'; \
+            strm << __FILE__ << ": " << __LINE__ << ": EXPECT_EQ(" << #X \
+                << ", " << #Y << ") failed: " << '[' << x << "] != [" << y \
+                << ']'; \
             throw std::runtime_error(strm.str()); \
         } \
         return true; \
@@ -312,8 +314,7 @@ test_transform()
 
     if (EXPECT(config.lookupList("f"))) {
         auto f = *config.lookupList("f");
-        EXPECT_EQ(2u, f.size()) &&
-            EXPECT_EQ("foo-foo"s, f[0]) &&
+        EXPECT_EQ(2u, f.size()) && EXPECT_EQ("foo-foo"s, f[0]) &&
             EXPECT_EQ("bar-bar"s, f[1]);
     }
 }
@@ -325,7 +326,7 @@ test_fallback_config()
     fallback_config.insertString("top", "top value");
     fallback_config.insertString("a.b.c", "a.b.c value");
     cfg::ext::Configuration config;
-    config->setFallbackConfiguration(fallback_config.operator->());
+    config->setFallbackConfiguration(fallback_config.operator -> ());
     config.parse(
         cfg::ext::Configuration::INPUT_STRING,
         R"(foo=top;
@@ -346,13 +347,17 @@ test_override_config()
     override_config.insertString("top", "top value");
     override_config.insertString("a.b.c", "a.b.c value");
     cfg::ext::Configuration config;
-    config->setOverrideConfiguration(override_config.operator->());
+    config->setOverrideConfiguration(override_config.operator -> ());
     config.parse(
         cfg::ext::Configuration::INPUT_STRING,
         R"(top="my top";
            a.b.c="my a.b.c";
            foo=top;
-           bar=a.b.c;)");
+           bar=a.b.c;
+           x.y.top=top;
+           x.z.top="something else";
+           x.z.a.biff="asda";
+           )");
 
     if (auto opt = config.lookupString("top"); EXPECT(opt)) {
         EXPECT_EQ("top value"s, *opt);
@@ -365,6 +370,16 @@ test_override_config()
     }
     if (auto opt = config.lookupString("bar"); EXPECT(opt)) {
         EXPECT_EQ("a.b.c value"s, *opt);
+    }
+
+    if (auto opt = config.lookupString("x.z.top"); EXPECT(opt)) {
+        EXPECT_EQ("something else"s, *opt);
+    }
+    if (auto opt = config.locateString("x.y.top"); EXPECT(opt)) {
+        EXPECT_EQ("top value"s, *opt);
+    }
+    if (auto opt = config.locateString("x.z.a.top"); EXPECT(opt)) {
+        EXPECT_EQ("something else"s, *opt);
     }
 }
 

@@ -720,6 +720,7 @@ ConfigurationImpl::lookup(
 	StringVector			vec;
 	ConfigScope *			scope;
 	ConfigItem *			item;
+	StringBuffer			absoluteName;
 
 	if (fullyScopedName[0] == '\0') {
 		return 0;
@@ -744,8 +745,15 @@ ConfigurationImpl::lookup(
 		scope = m_currScope;
 	}
 	item = 0;
+	if (m_overrideCfg || m_fallbackCfg) {
+		if (scope && scope != m_rootScope) {
+			mergeNames(scope->scopedName(), fullyScopedName, absoluteName);
+		} else {
+			absoluteName = fullyScopedName;
+		}
+	}
 	if (m_overrideCfg != 0) {
-		item = m_overrideCfg->lookup(fullyScopedName, localName, true, false);
+		item = m_overrideCfg->lookup(absoluteName.c_str(), localName, true, searchOutwards);
 		if (item) {
 			return item;
 		}
@@ -758,7 +766,7 @@ ConfigurationImpl::lookup(
 		scope = scope->parentScope();
 	}
 	if (item == 0 && m_fallbackCfg != 0) {
-		item = m_fallbackCfg->lookup(fullyScopedName, localName, true, false);
+		item = m_fallbackCfg->lookup(absoluteName.c_str(), localName, true, searchOutwards);
 	}
 	return item;
 }
