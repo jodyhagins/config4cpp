@@ -659,6 +659,15 @@ LexBase::consumeString(LexToken &token)
 			case 'n':
 				spelling << '\n';
 				break;
+			case 'v':
+				spelling << '\v';
+				break;
+			case 'f':
+				spelling << '\f';
+				break;
+			case 'r':
+				spelling << '\r';
+				break;
 			case '%':
 				spelling << '%';
 				break;

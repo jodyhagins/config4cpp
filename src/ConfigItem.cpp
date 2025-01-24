@@ -64,6 +64,15 @@ escapeString(const char * str)
 		case '\n':
 			buf.append("%n");
 			break;
+		case '\v':
+			buf.append("%v");
+			break;
+		case '\f':
+			buf.append("%f");
+			break;
+		case '\r':
+			buf.append("%r");
+			break;
 		case '%':
 			buf.append("%%");
 			break;
